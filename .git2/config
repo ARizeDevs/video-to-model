@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[user]
+	email = david@arize.io
+	name = David Rmz
+[remote "origin"]
+	url = https://github.com/ARizeDevs/video-to-model.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
