@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { LumaAiModule } from './luma-ai/luma-ai.module';
 import { DatabaseModule } from './database/database.module';
 import { DemandModule } from './demand/demand.module';
 import { AppConfigModule } from './app-config/app-config.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmExModule } from './database/typeorm/typeorm-ex.module';
-import { repositories } from './database/repositories';
 import { config } from 'dotenv';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configurations from './app-config/configurations';
@@ -34,6 +30,5 @@ config();
     CoreModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
