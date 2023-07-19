@@ -17,7 +17,7 @@ async function bootstrap() {
   const logger = app.get<LoggerService>(LoggerService);
 
   app.use(bodyParser.text());
-  app.use(cors);
+  // app.use(cors);
   app.useLogger(app.get(LoggerService));
   app.useGlobalInterceptors(
     new TransformInterceptor(process.env.EXPOSE_ALL === 'true'),
@@ -36,6 +36,7 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT || 3000);
   logger.verbose(`Server started on port ${process.env.PORT || 3000}`);
+  logger.verbose(`visit: http://localhost:${process.env.PORT || 3000}`);
 }
 
 bootstrap();
