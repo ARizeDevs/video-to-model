@@ -12,8 +12,6 @@ import { AppConfigModule } from 'src/app-config/app-config.module';
     TypeOrmModule.forRootAsync({
       imports: [AppConfigModule],
       useFactory: (appConfigService: AppConfigService) => {
-        console.log(appConfigService);
-
         const { type, host, port, database, username, password } =
           appConfigService.db;
 

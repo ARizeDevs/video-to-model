@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional, IsUrl } from 'class-validator';
 
-export class CreateDemand_ReqDto {
+export class CreateDemand_RequestDto {
   @IsNotEmpty()
   @IsString()
   name: string;

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DemandService } from './demand.service';
-import { CreateDemand_ReqDto } from './dto/req/create-demand.req.dto';
+import { CreateDemand_RequestDto, CreateDemand_ResponseDto } from './dtos';
 
 @Controller('demand')
 export class DemandController {
@@ -12,7 +12,9 @@ export class DemandController {
   }
 
   @Post()
-  async createDemand(@Body() createDemandDto: CreateDemand_ReqDto) {
-    return this.demandService.createDemand(createDemandDto);
+  async createDemand(@Body() createDemandDto: CreateDemand_RequestDto) {
+    return new CreateDemand_ResponseDto(
+      await this.demandService.createDemand(createDemandDto),
+    );
   }
 }
