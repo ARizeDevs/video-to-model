@@ -11,6 +11,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventsModule } from './events/events.module';
 import { CoreModule } from './core/core.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmExModule } from './database/typeorm/typeorm-ex.module';
+import { repositories } from './database/repositories';
+import { AppConfigService } from './app-config/app-config.service';
 
 config();
 @Module({

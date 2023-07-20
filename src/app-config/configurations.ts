@@ -14,11 +14,11 @@ const configurations: () => Configurations = () => {
     NODE_ENV = 'development',
     EXPOSE_ALL = false,
 
-    DATABASE_HOST,
-    DATABASE_PORT,
-    DATABASE_NAME,
-    DATABASE_USERNAME,
-    DATABASE_PASSWORD,
+    DB_HOST,
+    DB_PORT,
+    DB_NAME,
+    DB_USERNAME,
+    DB_PASSWORD,
 
     LUMA_HOST = 'https://webapp.engineeringlumalabs.com',
     LUMA_API_KEY,
@@ -32,11 +32,11 @@ const configurations: () => Configurations = () => {
     },
     database: {
       type: 'postgres',
-      host: DATABASE_HOST,
-      port: DATABASE_PORT ? parseInt(DATABASE_PORT, 10) : undefined,
-      database: DATABASE_NAME,
-      username: DATABASE_USERNAME,
-      password: DATABASE_PASSWORD,
+      host: DB_HOST,
+      port: DB_PORT ? parseInt(DB_PORT, 10) : undefined,
+      database: DB_NAME,
+      username: DB_USERNAME,
+      password: DB_PASSWORD,
     },
     luma: {
       host: LUMA_HOST,

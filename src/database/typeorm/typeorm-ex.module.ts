@@ -10,6 +10,8 @@ export class TypeOrmExModule {
   ): DynamicModule {
     const providers: Provider[] = [];
 
+    console.log('Initializing TypeOrmExModule');
+
     for (const repository of repositories) {
       const entity = Reflect.getMetadata(
         TYPEORM_EX_CUSTOM_REPOSITORY,

@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import axios, { AxiosRequestConfig } from 'axios';
 import { AppConfigService } from 'src/app-config/app-config.service';
 import { LoggerService } from 'src/core/logger/logger.service';
-import qs from 'qs';
 import { CreateCapture_ResponseDto } from './dtos/response/create-capture.response.dto';
 import { GetCredit_ResponseDto } from './dtos/response/get-credit.response.dto';
 import { TriggerCapture_ResponseDto } from './dtos/response/trigger-capture.response.dto';
@@ -11,6 +10,7 @@ import { UpdateCapture_RequestDto } from './dtos/request/update-capture.request.
 import { UpdateCapture_ResponseDto } from './dtos/response/update-capture.response.dto';
 import { GetCapture_ResponseDto } from './dtos/response/get-capture.response';
 import { GetCaptures_ResponseDto } from './dtos/response/get-captures.response.dto';
+import { stringify } from 'qs';
 
 @Injectable()
 export class LumaAiService {
@@ -46,7 +46,7 @@ export class LumaAiService {
   };
 
   createCapture = async (title: string): Promise<CreateCapture_ResponseDto> => {
-    const data = qs.stringify({
+    const data = stringify({
       title: title,
     });
 
@@ -59,31 +59,68 @@ export class LumaAiService {
     };
 
     try {
-      const response = await axios(config);
-      const captureResponse: CreateCapture_ResponseDto = response.data;
-      return captureResponse;
+      //   const response = await axios(config);
+      //   const captureResponse: CreateCapture_ResponseDto =
+      //     new CreateCapture_ResponseDto(response.data);
+      //   return captureResponse;
+      return new CreateCapture_ResponseDto({
+        signedUrls: {
+          source: 'https://storage.googleapis.com/...',
+        },
+        capture: {
+          title: 'sofa set',
+          type: 'reconstruction',
+          location: null,
+          privacy: 'private',
+          date: new Date('2023-03-26T15:54:08.268Z'),
+          username: 'karan',
+          status: 'uploading',
+          slug: 'pleasure-bless-j-243665',
+        },
+      });
     } catch (error) {
       this.loggerService.error(error);
       throw new Error('Failed to create capture');
     }
   };
 
-  upload = async (data: any[], url: string): Promise<any> => {
-    const config: AxiosRequestConfig = {
-      method: 'put',
-      maxBodyLength: Infinity,
-      url: url,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      data: data,
-    };
+  upload = async (
+    fileAddress: string,
+    destinationUrl: string,
+  ): Promise<any> => {
+    // Regular expression pattern to check for Google Drive shared links
+    const googleDrivePattern =
+      /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view/;
+
+    // Check if it's a Google Drive shared link
+    const match = fileAddress.match(googleDrivePattern);
+    if (match) {
+      // If it's a shared link, convert it to a direct download link
+      const fileId = match[1];
+      fileAddress = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    }
 
     try {
-      const response = await axios(config);
-      return response.data;
+      // Download the file from the provided URL
+      const response = await axios.get(fileAddress, {
+        responseType: 'arraybuffer',
+      });
+
+      // Upload the downloaded file to the destination URL
+      const config: AxiosRequestConfig = {
+        method: 'put',
+        maxBodyLength: Infinity,
+        url: destinationUrl,
+        headers: {
+          'Content-Type': 'application/octet-stream', // Use appropriate content type for your file type
+        },
+        data: response.data,
+      };
+
+      const uploadResponse = await axios(config);
+      return uploadResponse.data;
     } catch (error) {
-      console.log(error);
+      this.loggerService.error(error);
       throw new Error('Failed to upload data');
     }
   };

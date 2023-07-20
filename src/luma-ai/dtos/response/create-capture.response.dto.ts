@@ -1,20 +1,49 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+
+class CaptureType {
+  @Expose()
+  title: string;
+
+  @Expose()
+  type: string;
+
+  @Expose()
+  location: string | null;
+
+  @Expose()
+  privacy: string;
+
+  @Expose()
+  date: Date;
+
+  @Expose()
+  username: string;
+
+  @Expose()
+  status: string;
+
+  @Expose()
+  slug: string;
+}
+
+class SignedUrls {
+  @Expose()
+  source: string;
+}
 
 export class CreateCapture_ResponseDto {
-  @Expose()
-  signedUrls: {
-    source: string;
-  };
+  /**
+   *
+   */
+  constructor(data: Partial<CreateCapture_ResponseDto>) {
+    Object.assign(this, data);
+  }
 
   @Expose()
-  capture: {
-    title: string;
-    type: string;
-    location: string | null;
-    privacy: string;
-    date: Date;
-    username: string;
-    status: string;
-    slug: string;
-  };
+  @Type(() => SignedUrls)
+  signedUrls: SignedUrls;
+
+  @Expose()
+  @Type(() => CaptureType)
+  capture: CaptureType;
 }

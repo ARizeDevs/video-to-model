@@ -3,7 +3,7 @@ import { BaseEntity } from './base.entity';
 import { v4 as uuid } from 'uuid';
 
 @Entity()
-export class DemandEntity extends BaseEntity {
+export class DemandEntity extends BaseEntity<DemandEntity> {
   @Column('uuid', { default: () => `'${uuid()}'` })
   slug: string;
 
