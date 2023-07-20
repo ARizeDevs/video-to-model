@@ -7,7 +7,7 @@ export class AppController {
 
   @Get()
   async getHello() {
-    const result = await this.appService.getCredit();
+    const result = await this.appService.createCapture('sdf');
     return result;
   }
 }

@@ -4,30 +4,36 @@ import { TypeOrmExModule } from './typeorm/typeorm-ex.module';
 import { repositories } from './repositories';
 import { DemandEntity } from './entities/demand.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppConfigService } from 'src/app-config/app-config.service';
+import { AppConfigModule } from 'src/app-config/app-config.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: () => {
+      imports: [AppConfigModule],
+      useFactory: (appConfigService: AppConfigService) => {
+        console.log(appConfigService);
+
+        const { type, host, port, database, username, password } =
+          appConfigService.db;
+
         return {
           type: 'postgres',
-          host: process.env.DB_HOST,
-          port: +process.env.DB_PORT,
-          username: process.env.DB_USERNAME,
-          password: process.env.DB_PASSWORD,
-          database: process.env.DB_DATABASE,
+          host: host || 'localhost',
+          port: +port,
+          username: username || '',
+          password: password,
+          database: database,
           synchronize: true,
           logging: false,
+          autoLoadEntities: true,
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         };
       },
-      inject: [ConfigService],
+      inject: [AppConfigService],
     }),
-    TypeOrmExModule.forCustomRepository([...repositories]),
     TypeOrmModule.forFeature([DemandEntity]),
+    TypeOrmExModule.forCustomRepository([...repositories]),
   ],
-  providers: [...repositories],
-  exports: [...repositories],
 })
 export class DatabaseModule {}
