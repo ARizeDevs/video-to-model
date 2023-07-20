@@ -1,16 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { DemandEntity } from 'src/database/entities/demand.entity';
 import { DemandRepository } from 'src/database/repositories/demand.repository';
-import { CreateDemand_ReqDto } from './dto/req/create-demand.req.dto';
+import { CreateDemand_RequestDto } from './dtos/request/create-demand.request.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EVENTS } from 'src/events';
 
 @Injectable()
 export class DemandService {
-  constructor(private demandRepository: DemandRepository) {}
+  constructor(
+    private demandRepository: DemandRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async createDemand(
-    createDemandDto: CreateDemand_ReqDto,
+    createDemandDto: CreateDemand_RequestDto,
   ): Promise<DemandEntity> {
     const demand = this.demandRepository.create(createDemandDto);
+    this.eventEmitter.emit(EVENTS.demand.demandCreated, {
+      demand,
+    });
     return this.demandRepository.save(demand);
   }
 

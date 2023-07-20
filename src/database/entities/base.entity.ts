@@ -1,4 +1,10 @@
-import { PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Column,
+  BeforeInsert,
+} from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 export abstract class BaseEntity<T> {
   constructor(partial: Partial<T> = {}) {
@@ -10,4 +16,12 @@ export abstract class BaseEntity<T> {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column('uuid', { unique: true })
+  uid: string;
+
+  @BeforeInsert()
+  generateUid() {
+    this.uid = uuidv4();
+  }
 }
