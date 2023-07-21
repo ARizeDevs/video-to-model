@@ -24,7 +24,7 @@ import { entities } from './entities';
           synchronize: true,
           logging: false,
           autoLoadEntities: true,
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         };
       },
       inject: [AppConfigService],
