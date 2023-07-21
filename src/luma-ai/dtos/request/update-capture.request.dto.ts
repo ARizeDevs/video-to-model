@@ -10,28 +10,28 @@ import {
 export class UpdateCapture_RequestDto {
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
   @IsString()
   @IsOptional()
-  privacy: string;
+  privacy?: string;
 
   @IsOptional()
   @Type(() => LocationDto)
   @ValidateNested()
-  location: LocationDto;
+  location?: LocationDto;
 }
 
 class LocationDto {
   @IsNumber()
-  latitude: number;
+  latitude?: number;
 
   @IsNumber()
-  longitude: number;
+  longitude?: number;
 
   @IsString()
-  name: string;
+  name?: string;
 
   @IsBoolean()
-  isVisible: boolean;
+  isVisible?: boolean;
 }

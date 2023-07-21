@@ -54,9 +54,9 @@ export class LumaAiService {
     apiKey: string,
     title: string,
   ): Promise<CreateCapture_ResponseDto> => {
-    const data = stringify({
+    const data = {
       title: title,
-    });
+    };
 
     this.eventEmitter.emit(EVENTS.luma.capture.creating, { title });
 
@@ -156,9 +156,10 @@ export class LumaAiService {
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
       headers: this.headers(apiKey),
-      data: JSON.stringify(data),
+      data,
     };
 
+    //
     try {
       const response = await axios(config);
       const updateCaptureResponse: UpdateCapture_ResponseDto = response.data;
