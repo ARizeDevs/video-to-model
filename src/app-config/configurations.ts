@@ -1,12 +1,10 @@
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { IAppConfig } from './interfaces/app.config.interface';
-import { ILumaConfig } from './interfaces/luma.config.interface';
 import { ISlackConfig } from './interfaces/slack.config.interface';
 
 export interface Configurations {
   app: IAppConfig;
   database: PostgresConnectionOptions;
-  luma: ILumaConfig;
   slack: ISlackConfig;
 }
 
@@ -42,10 +40,6 @@ const configurations: () => Configurations = () => {
       database: DB_NAME,
       username: DB_USERNAME,
       password: DB_PASSWORD,
-    },
-    luma: {
-      host: LUMA_HOST,
-      apiKey: LUMA_API_KEY,
     },
     slack: {
       accessToken: SLACK_ACCESS_TOKEN,

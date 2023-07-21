@@ -1,10 +1,4 @@
-import {
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  Column,
-  BeforeInsert,
-} from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column } from 'typeorm';
 
 export abstract class BaseEntity<T> {
   constructor(partial: Partial<T> = {}) {
@@ -19,9 +13,4 @@ export abstract class BaseEntity<T> {
 
   @Column('uuid', { unique: true })
   uid: string;
-
-  @BeforeInsert()
-  generateUid() {
-    this.uid = uuidv4();
-  }
 }

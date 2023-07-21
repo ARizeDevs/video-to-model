@@ -5,4 +5,4 @@ import { LumaApiKeyEntity } from '../entities/luma-api-key.entity';
 
 @Injectable()
 @CustomRepository(LumaApiKeyEntity)
-export class LumaApiKeyEntityRepository extends BaseRepository<LumaApiKeyEntity> {}
+export class LumaApiKeyRepository extends BaseRepository<LumaApiKeyEntity> {}

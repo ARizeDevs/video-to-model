@@ -10,7 +10,4 @@ export class CreateLumaApiKey_RequestDto {
 
   @IsEmail()
   email: string;
-
-  @IsNumber()
-  remainCredit: number;
 }

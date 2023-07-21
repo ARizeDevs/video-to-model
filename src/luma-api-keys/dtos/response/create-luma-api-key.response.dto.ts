@@ -12,5 +12,5 @@ export class CreateLumaApiKey_ResponseDto {
   email: string;
 
   @Expose()
-  remainCredit: number;
+  remainingCredit: number;
 }

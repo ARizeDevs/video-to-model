@@ -6,11 +6,6 @@ import { CreateDemand_RequestDto, CreateDemand_ResponseDto } from './dtos';
 export class DemandsController {
   constructor(private demandService: DemandsService) {}
 
-  @Get(':slug')
-  async getDemandBySlug(@Param('slug') slug: string) {
-    return this.demandService.findDemandBySlug(slug);
-  }
-
   @Post()
   async createDemand(@Body() createDemandDto: CreateDemand_RequestDto) {
     return new CreateDemand_ResponseDto(

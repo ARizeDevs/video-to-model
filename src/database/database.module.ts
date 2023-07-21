@@ -1,12 +1,9 @@
-import { Module, Provider } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmExModule } from './typeorm/typeorm-ex.module';
 import { repositories } from './repositories';
-import { DemandEntity } from './entities/demand.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfigService } from 'src/app-config/app-config.service';
 import { AppConfigModule } from 'src/app-config/app-config.module';
-import { LumaApiKeyEntity } from './entities/luma-api-key.entity';
 import { entities } from './entities';
 
 @Module({

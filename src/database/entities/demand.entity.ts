@@ -1,12 +1,9 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { v4 as uuid } from 'uuid';
+import { LumaCaptureEntity } from './luma-capture.entity';
 
 @Entity('demands')
 export class DemandEntity extends BaseEntity<DemandEntity> {
-  @Column('uuid', { nullable: true })
-  slug: string;
-
   @Column()
   name: string;
 
@@ -15,4 +12,10 @@ export class DemandEntity extends BaseEntity<DemandEntity> {
 
   @Column({ nullable: true })
   videoUrl: string;
+
+  @OneToMany(
+    () => LumaCaptureEntity,
+    (capture: LumaCaptureEntity) => capture.lumaApiKey,
+  )
+  lumaCaptures: LumaCaptureEntity[];
 }

@@ -41,4 +41,22 @@ export class SlackUtilsService {
   }) {
     await this.sendMessage(obj, this.appConfigService.slack.defaultChannel);
   }
+
+  async sendWarningMessageDefaultChannel(text: string) {
+    await this.sendMessage(
+      {
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              verbatim: false,
+              text: `:warning: ${text}`,
+            },
+          },
+        ],
+      },
+      this.appConfigService.slack.defaultChannel,
+    );
+  }
 }

@@ -1,4 +1,12 @@
 import { DemandCreatedEventHandler } from './demand/demand-created.event';
-import { CaptureCreatingEventHandler } from './luma/capture-creating.event';
+import { LumaApiKeyCreatedEventHandler } from './luma/api/api-created.event';
+import { CaptureCreatingEventHandler } from './luma/capture/capture-creating.event';
 
-export default [DemandCreatedEventHandler, CaptureCreatingEventHandler];
+export default [
+  //app
+  DemandCreatedEventHandler,
+
+  // luma
+  CaptureCreatingEventHandler,
+  LumaApiKeyCreatedEventHandler,
+];

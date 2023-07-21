@@ -16,6 +16,9 @@ import { TypeOrmExModule } from './database/typeorm/typeorm-ex.module';
 import { repositories } from './database/repositories';
 import { AppConfigService } from './app-config/app-config.service';
 import { LumaApiKeysModule } from './luma-api-keys/luma-api-keys.module';
+import { LumaCapturesModule } from './luma-captures/luma-captures.module';
+import { SharedModule } from './shared/shared.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 config();
 @Module({
@@ -34,6 +37,9 @@ config();
     EventsModule,
     CoreModule,
     LumaApiKeysModule,
+    LumaCapturesModule,
+    SharedModule,
+    SchedulerModule,
   ],
   controllers: [AppController],
 })

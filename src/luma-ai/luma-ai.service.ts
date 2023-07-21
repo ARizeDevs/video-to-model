@@ -24,18 +24,18 @@ export class LumaAiService {
     private readonly slackUtilsService: SlackUtilsService,
   ) {}
 
-  get headers() {
+  headers(apiKey: string) {
     return {
-      Authorization: `luma-api-key=${this.appConfigService.luma.apiKey}`,
+      Authorization: `luma-api-key=${apiKey}`,
     };
   }
 
-  getCredit = async (): Promise<GetCredit_ResponseDto> => {
+  getCredit = async (apiKey: string): Promise<GetCredit_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${LUMA_URLS.capture.credits}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -50,7 +50,10 @@ export class LumaAiService {
     }
   };
 
-  createCapture = async (title: string): Promise<CreateCapture_ResponseDto> => {
+  createCapture = async (
+    apiKey: string,
+    title: string,
+  ): Promise<CreateCapture_ResponseDto> => {
     const data = stringify({
       title: title,
     });
@@ -61,7 +64,7 @@ export class LumaAiService {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
       data: data,
     };
 
@@ -123,13 +126,14 @@ export class LumaAiService {
   };
 
   triggerCapture = async (
+    apiKey: string,
     slug: string,
   ): Promise<TriggerCapture_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -143,6 +147,7 @@ export class LumaAiService {
   };
 
   updateCapture = async (
+    apiKey: string,
     slug: string,
     data: UpdateCapture_RequestDto,
   ): Promise<UpdateCapture_ResponseDto> => {
@@ -150,7 +155,7 @@ export class LumaAiService {
       method: 'put',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
       data: JSON.stringify(data),
     };
 
@@ -164,12 +169,15 @@ export class LumaAiService {
     }
   };
 
-  getCapture = async (slug: string): Promise<GetCapture_ResponseDto> => {
+  getCapture = async (
+    apiKey: string,
+    slug: string,
+  ): Promise<GetCapture_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -182,12 +190,15 @@ export class LumaAiService {
     }
   };
 
-  getCaptures = async (option?: {
-    pageIndex?: number;
-    take?: number;
-    order?: 'DESC' | 'ASC';
-    search?: string;
-  }): Promise<GetCaptures_ResponseDto> => {
+  getCaptures = async (
+    apiKey: string,
+    option?: {
+      pageIndex?: number;
+      take?: number;
+      order?: 'DESC' | 'ASC';
+      search?: string;
+    },
+  ): Promise<GetCaptures_ResponseDto> => {
     const {
       pageIndex = 0,
       take = 10000,
@@ -201,7 +212,7 @@ export class LumaAiService {
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}?${
         search ? `search=${search}&` : ''
       }skip=${pageIndex * take}&take=${take}&order=${order}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {

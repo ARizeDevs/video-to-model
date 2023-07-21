@@ -7,5 +7,6 @@ import { DatabaseModule } from 'src/database/database.module';
   imports: [DatabaseModule],
   providers: [LumaApiKeysService],
   controllers: [LumaApiKeysController],
+  exports: [LumaApiKeysService],
 })
 export class LumaApiKeysModule {}
