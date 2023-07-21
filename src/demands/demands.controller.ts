@@ -1,15 +1,10 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { DemandService } from './demand.service';
+import { DemandsService } from './demands.service';
 import { CreateDemand_RequestDto, CreateDemand_ResponseDto } from './dtos';
 
-@Controller('demand')
-export class DemandController {
-  constructor(private demandService: DemandService) {}
-
-  @Get(':slug')
-  async getDemandBySlug(@Param('slug') slug: string) {
-    return this.demandService.findDemandBySlug(slug);
-  }
+@Controller('demands')
+export class DemandsController {
+  constructor(private demandService: DemandsService) {}
 
   @Post()
   async createDemand(@Body() createDemandDto: CreateDemand_RequestDto) {

@@ -4,9 +4,11 @@ import { DemandRepository } from 'src/database/repositories/demand.repository';
 import { CreateDemand_RequestDto } from './dtos/request/create-demand.request.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENTS } from 'src/events';
+import { LumaApiKeyEntity } from 'src/database/entities/luma-api-key.entity';
+import { CreateCapture_ResponseDto } from 'src/luma-ai/dtos/response/create-capture.response.dto';
 
 @Injectable()
-export class DemandService {
+export class DemandsService {
   constructor(
     private demandRepository: DemandRepository,
     private readonly eventEmitter: EventEmitter2,
@@ -19,10 +21,6 @@ export class DemandService {
     this.eventEmitter.emit(EVENTS.demand.demandCreated, {
       demand,
     });
-    return this.demandRepository.save(demand);
-  }
-
-  async findDemandBySlug(slug: string): Promise<DemandEntity | undefined> {
-    return this.demandRepository.findBySlug(slug);
+    return this.demandRepository.saveAndReload(demand);
   }
 }

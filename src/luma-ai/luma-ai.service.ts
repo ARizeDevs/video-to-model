@@ -11,26 +11,31 @@ import { UpdateCapture_ResponseDto } from './dtos/response/update-capture.respon
 import { GetCapture_ResponseDto } from './dtos/response/get-capture.response';
 import { GetCaptures_ResponseDto } from './dtos/response/get-captures.response.dto';
 import { stringify } from 'qs';
+import { SlackUtilsService } from 'src/slack-utils/slack-utils.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EVENTS } from 'src/events';
 
 @Injectable()
 export class LumaAiService {
   constructor(
     private readonly loggerService: LoggerService,
     private readonly appConfigService: AppConfigService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly slackUtilsService: SlackUtilsService,
   ) {}
 
-  get headers() {
+  headers(apiKey: string) {
     return {
-      Authorization: `luma-api-key=${this.appConfigService.luma.apiKey}`,
+      Authorization: `luma-api-key=${apiKey}`,
     };
   }
 
-  getCredit = async (): Promise<GetCredit_ResponseDto> => {
+  getCredit = async (apiKey: string): Promise<GetCredit_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${LUMA_URLS.capture.credits}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -45,39 +50,34 @@ export class LumaAiService {
     }
   };
 
-  createCapture = async (title: string): Promise<CreateCapture_ResponseDto> => {
+  createCapture = async (
+    apiKey: string,
+    title: string,
+  ): Promise<CreateCapture_ResponseDto> => {
     const data = stringify({
       title: title,
     });
+
+    this.eventEmitter.emit(EVENTS.luma.capture.creating, { title });
 
     const config: AxiosRequestConfig = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
       data: data,
     };
 
     try {
-      //   const response = await axios(config);
-      //   const captureResponse: CreateCapture_ResponseDto =
-      //     new CreateCapture_ResponseDto(response.data);
-      //   return captureResponse;
-      return new CreateCapture_ResponseDto({
-        signedUrls: {
-          source: 'https://storage.googleapis.com/...',
-        },
-        capture: {
-          title: 'sofa set',
-          type: 'reconstruction',
-          location: null,
-          privacy: 'private',
-          date: new Date('2023-03-26T15:54:08.268Z'),
-          username: 'karan',
-          status: 'uploading',
-          slug: 'pleasure-bless-j-243665',
-        },
+      const response = await axios(config);
+      const captureResponse: CreateCapture_ResponseDto =
+        new CreateCapture_ResponseDto(response.data);
+
+      this.eventEmitter.emit(EVENTS.luma.capture.created, {
+        data: captureResponse,
       });
+
+      return captureResponse;
     } catch (error) {
       this.loggerService.error(error);
       throw new Error('Failed to create capture');
@@ -126,13 +126,14 @@ export class LumaAiService {
   };
 
   triggerCapture = async (
+    apiKey: string,
     slug: string,
   ): Promise<TriggerCapture_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -146,6 +147,7 @@ export class LumaAiService {
   };
 
   updateCapture = async (
+    apiKey: string,
     slug: string,
     data: UpdateCapture_RequestDto,
   ): Promise<UpdateCapture_ResponseDto> => {
@@ -153,7 +155,7 @@ export class LumaAiService {
       method: 'put',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
       data: JSON.stringify(data),
     };
 
@@ -167,12 +169,15 @@ export class LumaAiService {
     }
   };
 
-  getCapture = async (slug: string): Promise<GetCapture_ResponseDto> => {
+  getCapture = async (
+    apiKey: string,
+    slug: string,
+  ): Promise<GetCapture_ResponseDto> => {
     const config: AxiosRequestConfig = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}/${slug}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {
@@ -185,12 +190,15 @@ export class LumaAiService {
     }
   };
 
-  getCaptures = async (option?: {
-    pageIndex?: number;
-    take?: number;
-    order?: 'DESC' | 'ASC';
-    search?: string;
-  }): Promise<GetCaptures_ResponseDto> => {
+  getCaptures = async (
+    apiKey: string,
+    option?: {
+      pageIndex?: number;
+      take?: number;
+      order?: 'DESC' | 'ASC';
+      search?: string;
+    },
+  ): Promise<GetCaptures_ResponseDto> => {
     const {
       pageIndex = 0,
       take = 10000,
@@ -204,7 +212,7 @@ export class LumaAiService {
       url: `${LUMA_URLS.host}/${LUMA_URLS.capture.base}?${
         search ? `search=${search}&` : ''
       }skip=${pageIndex * take}&take=${take}&order=${order}`,
-      headers: this.headers,
+      headers: this.headers(apiKey),
     };
 
     try {

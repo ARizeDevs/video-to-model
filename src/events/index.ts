@@ -3,6 +3,12 @@ export const EVENTS = {
     demandCreated: 'ev.demand.demandCreated',
   },
   luma: {
-    captureCreated: 'ev.luma.captureCreated',
+    api: {
+      created: 'ev.luma.api.created',
+    },
+    capture: {
+      created: 'ev.luma.capture.created',
+      creating: 'ev.luma.capture.creating',
+    },
   },
 };

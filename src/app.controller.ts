@@ -7,7 +7,6 @@ export class AppController {
 
   @Get()
   async getHello() {
-    const result = await this.appService.createCapture('sdf');
-    return result;
+    //
   }
 }

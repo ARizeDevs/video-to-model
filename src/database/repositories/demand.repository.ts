@@ -7,7 +7,7 @@ import BaseRepository from './base.repository';
 @Injectable()
 @CustomRepository(DemandEntity)
 export class DemandRepository extends BaseRepository<DemandEntity> {
-  async findBySlug(slug: string): Promise<DemandEntity | undefined> {
-    return this.findOneBy({ slug });
-  }
+  // async findBySlug(slug: string): Promise<DemandEntity | undefined> {
+  //   return this.findOneBy({ slug });
+  // }
 }
