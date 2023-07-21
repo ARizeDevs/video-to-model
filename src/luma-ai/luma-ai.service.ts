@@ -11,12 +11,17 @@ import { UpdateCapture_ResponseDto } from './dtos/response/update-capture.respon
 import { GetCapture_ResponseDto } from './dtos/response/get-capture.response';
 import { GetCaptures_ResponseDto } from './dtos/response/get-captures.response.dto';
 import { stringify } from 'qs';
+import { SlackUtilsService } from 'src/slack-utils/slack-utils.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EVENTS } from 'src/events';
 
 @Injectable()
 export class LumaAiService {
   constructor(
     private readonly loggerService: LoggerService,
     private readonly appConfigService: AppConfigService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly slackUtilsService: SlackUtilsService,
   ) {}
 
   get headers() {
@@ -50,6 +55,8 @@ export class LumaAiService {
       title: title,
     });
 
+    this.eventEmitter.emit(EVENTS.luma.capture.creating, { title });
+
     const config: AxiosRequestConfig = {
       method: 'post',
       maxBodyLength: Infinity,
@@ -59,25 +66,15 @@ export class LumaAiService {
     };
 
     try {
-      //   const response = await axios(config);
-      //   const captureResponse: CreateCapture_ResponseDto =
-      //     new CreateCapture_ResponseDto(response.data);
-      //   return captureResponse;
-      return new CreateCapture_ResponseDto({
-        signedUrls: {
-          source: 'https://storage.googleapis.com/...',
-        },
-        capture: {
-          title: 'sofa set',
-          type: 'reconstruction',
-          location: null,
-          privacy: 'private',
-          date: new Date('2023-03-26T15:54:08.268Z'),
-          username: 'karan',
-          status: 'uploading',
-          slug: 'pleasure-bless-j-243665',
-        },
+      const response = await axios(config);
+      const captureResponse: CreateCapture_ResponseDto =
+        new CreateCapture_ResponseDto(response.data);
+
+      this.eventEmitter.emit(EVENTS.luma.capture.created, {
+        data: captureResponse,
       });
+
+      return captureResponse;
     } catch (error) {
       this.loggerService.error(error);
       throw new Error('Failed to create capture');

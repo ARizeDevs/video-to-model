@@ -6,6 +6,8 @@ import { DemandEntity } from './entities/demand.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfigService } from 'src/app-config/app-config.service';
 import { AppConfigModule } from 'src/app-config/app-config.module';
+import { LumaApiKeyEntity } from './entities/luma-api-key.entity';
+import { entities } from './entities';
 
 @Module({
   imports: [
@@ -30,7 +32,7 @@ import { AppConfigModule } from 'src/app-config/app-config.module';
       },
       inject: [AppConfigService],
     }),
-    TypeOrmModule.forFeature([DemandEntity]),
+    TypeOrmModule.forFeature([...entities]),
     TypeOrmExModule.forCustomRepository([...repositories]),
   ],
 })

@@ -6,7 +6,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENTS } from 'src/events';
 
 @Injectable()
-export class DemandService {
+export class DemandsService {
   constructor(
     private demandRepository: DemandRepository,
     private readonly eventEmitter: EventEmitter2,
