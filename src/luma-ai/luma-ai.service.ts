@@ -215,7 +215,7 @@ export class LumaAiService {
       }skip=${pageIndex * take}&take=${take}&order=${order}`,
       headers: this.headers(apiKey),
     };
-
+    //
     try {
       const response = await axios(config);
       const getCapturesResponse: GetCaptures_ResponseDto = response.data;

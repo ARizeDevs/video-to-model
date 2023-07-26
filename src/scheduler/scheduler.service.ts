@@ -69,11 +69,23 @@ export class SchedulerService {
               status: 'completed',
               getCapture: mappedLumaCapture,
             });
+
+            this.sharedService.callbackDemand(capture.demand, {
+              progress: 100,
+              status: 'completed',
+              extra: mappedLumaCapture,
+              artifacts: mappedLumaCapture.latestRun?.artifacts,
+            });
           } else if (mappedLumaCapture.latestRun?.progress > 0) {
             await this.lumaCapturesService.update(capture.id, {
               progress: mappedLumaCapture.latestRun?.progress,
               status: 'in-progress',
               getCapture: mappedLumaCapture,
+            });
+            this.sharedService.callbackDemand(capture.demand, {
+              progress: mappedLumaCapture.latestRun?.progress,
+              status: 'in-progress',
+              extra: mappedLumaCapture,
             });
           }
         }),

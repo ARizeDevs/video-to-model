@@ -5,11 +5,10 @@ export class CreateDemand_RequestDto {
   @IsString()
   name: string;
 
-  @IsOptional()
   @IsUrl()
-  videoUrl?: string;
+  videoUrl: string;
 
   @IsOptional()
-  @IsUrl()
-  callbackUrl?: string;
+  @IsString()
+  callbackUrl: string;
 }

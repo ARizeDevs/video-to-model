@@ -13,6 +13,9 @@ export class DemandEntity extends BaseEntity<DemandEntity> {
   @Column({ nullable: true })
   videoUrl: string;
 
+  // @Column({ nullable: true, type: 'jsonb', default: {} })
+  // extra: string;
+
   @OneToMany(
     () => LumaCaptureEntity,
     (capture: LumaCaptureEntity) => capture.lumaApiKey,
