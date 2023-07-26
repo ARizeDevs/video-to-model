@@ -30,7 +30,7 @@ export class LumaCapturesService {
         progress: Not(100),
         status: Not('completed'),
       },
-      relations: ['lumaApiKey'], // Replace with actual relation names
+      relations: ['lumaApiKey', 'demand'], // Replace with actual relation names
     });
 
     return captures;

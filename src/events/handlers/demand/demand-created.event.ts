@@ -1,10 +1,13 @@
 import { LumaAiService } from './../../../luma-ai/luma-ai.service';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import axios from 'axios';
 import { LoggerService } from 'src/core/logger/logger.service';
 import { DemandEntity } from 'src/database/entities/demand.entity';
+import { LumaCaptureEntity } from 'src/database/entities/luma-capture.entity';
 import { DemandsService } from 'src/demands/demands.service';
 import { EVENTS } from 'src/events';
+import { CreateCapture_ResponseDto } from 'src/luma-ai/dtos/response/create-capture.response.dto';
 import { LumaApiKeysService } from 'src/luma-api-keys/luma-api-keys.service';
 import { LumaCapturesService } from 'src/luma-captures/luma-captures.service';
 import { SharedService } from 'src/shared/shared.service';
@@ -36,20 +39,38 @@ export class DemandCreatedEventHandler {
 
     const lumaApiKey = lumaApiKeys[0];
 
-    const capture = await this.lumaAiService.createCapture(
-      lumaApiKey.apiKey,
-      `${demand.name} - InProgress`,
-    );
+    let capture: CreateCapture_ResponseDto;
+    try {
+      capture = await this.lumaAiService.createCapture(
+        lumaApiKey.apiKey,
+        `${demand.name} - InProgress`,
+      );
+    } catch (error) {
+      return;
+    }
 
-    const lumaCapture = await this.lumaCapturesService.create({
-      lumaApiKeyId: lumaApiKey.id,
-      signedUrl: capture.signedUrls.source,
-      demandId: demand.id,
-      capture: capture,
-      slug: capture.capture.slug,
-    });
+    let lumaCapture: LumaCaptureEntity;
 
-    await this.lumaAiService.upload(demand.videoUrl, lumaCapture.signedUrl);
+    try {
+      lumaCapture = await this.lumaCapturesService.create({
+        lumaApiKeyId: lumaApiKey.id,
+        signedUrl: capture.signedUrls.source,
+        demandId: demand.id,
+        capture: capture,
+        slug: capture.capture.slug,
+      });
+    } catch (error) {
+      return;
+    }
+
+    try {
+      await this.lumaAiService.upload(demand.videoUrl, lumaCapture.signedUrl);
+    } catch (error) {
+      this.sharedService.callbackDemand(demand, { hasError: true, error });
+      return;
+    }
+
+    this.sharedService.callbackDemand(demand, { status: 'file-uploaded' });
 
     await this.lumaAiService.triggerCapture(
       lumaApiKey.apiKey,
