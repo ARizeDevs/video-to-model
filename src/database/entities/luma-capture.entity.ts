@@ -24,7 +24,7 @@ export class LumaCaptureEntity extends BaseEntity<LumaCaptureEntity> {
   progress: number;
 
   @Column({ default: 'not-started' })
-  status: 'not-started' | 'in-progress' | 'completed';
+  status: 'not-started' | 'in-progress' | 'completed' | 'failed';
 
   /// Luma Api Key Entity
   @Column({ nullable: false })

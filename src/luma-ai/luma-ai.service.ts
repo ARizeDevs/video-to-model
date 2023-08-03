@@ -10,7 +10,6 @@ import { UpdateCapture_RequestDto } from './dtos/request/update-capture.request.
 import { UpdateCapture_ResponseDto } from './dtos/response/update-capture.response.dto';
 import { GetCapture_ResponseDto } from './dtos/response/get-capture.response';
 import { GetCaptures_ResponseDto } from './dtos/response/get-captures.response.dto';
-import { stringify } from 'qs';
 import { SlackUtilsService } from 'src/slack-utils/slack-utils.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EVENTS } from 'src/events';
@@ -120,7 +119,9 @@ export class LumaAiService {
       const uploadResponse = await axios(config);
       return uploadResponse.data;
     } catch (error) {
-      this.loggerService.error(error);
+      this.loggerService.error(`File Upload Error`);
+      console.log(error);
+
       throw new Error('Failed to upload data');
     }
   };
