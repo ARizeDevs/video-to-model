@@ -19,7 +19,7 @@ export class SchedulerService {
     private readonly sharedService: SharedService,
   ) {}
 
-  @Cron('*/2 * * * *')
+  @Cron('*/20 * * * * *')
   async handleCron() {
     const inProgressCaptures =
       await this.lumaCapturesService.getInprogressCaptures();
