@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { DemandsService } from './demands.service';
 import { CreateDemand_RequestDto, CreateDemand_ResponseDto } from './dtos';
+import { ARizeGuard } from 'src/guards/arize.guard';
 
 @Controller('demands')
+@UseGuards(ARizeGuard)
 export class DemandsController {
   constructor(private demandService: DemandsService) {}
 
