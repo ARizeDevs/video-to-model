@@ -46,6 +46,7 @@ export class DemandCreatedEventHandler {
         `${demand.name} - InProgress`,
       );
     } catch (error) {
+      this.loggerService.error(error);
       return;
     }
 
@@ -60,6 +61,7 @@ export class DemandCreatedEventHandler {
         slug: capture.capture.slug,
       });
     } catch (error) {
+      this.loggerService.error(error);
       return;
     }
 
@@ -67,6 +69,7 @@ export class DemandCreatedEventHandler {
       await this.lumaAiService.upload(demand.videoUrl, lumaCapture.signedUrl);
     } catch (error) {
       this.sharedService.callbackDemand(demand, { hasError: true, error });
+      this.loggerService.error(error);
       return;
     }
 
