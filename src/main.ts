@@ -7,6 +7,7 @@ import { LoggerService } from './core/logger/logger.service';
 import { TransformInterceptor } from './utils/interceptors/transform.interceptor';
 import { ValidationPipe } from '@nestjs/common';
 import * as morgan from 'morgan';
+import { ARizeGuard } from './guards/arize.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -19,6 +20,7 @@ async function bootstrap() {
   app.use(bodyParser.text());
   // app.use(cors);
   app.useLogger(app.get(LoggerService));
+
   app.useGlobalInterceptors(
     new TransformInterceptor(process.env.EXPOSE_ALL === 'true'),
   );

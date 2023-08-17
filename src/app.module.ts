@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { LumaAiModule } from './luma-ai/luma-ai.module';
 import { DatabaseModule } from './database/database.module';
 import { DemandsModule } from './demands/demands.module';
@@ -41,6 +40,6 @@ config();
     SharedModule,
     SchedulerModule,
   ],
-  controllers: [AppController],
+  controllers: [],
 })
 export class AppModule {}
