@@ -30,10 +30,30 @@ export class DemandCreatedEventHandler {
   @OnEvent(EVENTS.demand.demandCreated)
   async demandCreatedEvent({ demand }: { demand: DemandEntity }) {
     const lumaApiKeys = await this.lumaApiKeysService.getAvailableLumaApiKeys();
+
     if (!lumaApiKeys.length) {
       this.slackUtilsService.sendWarningMessageDefaultChannel(
         `You don't have any available Luma Api Keys`,
       );
+      return;
+    }
+
+    if (
+      lumaApiKeys.reduce((total, key) => total + key.remainingCredit, 0) < 200
+    ) {
+      this.slackUtilsService.sendWarningMessageDefaultChannel(
+        `
+You don't have enough credit in your Luma Api Keys
+Your Luma Api Keys: ${lumaApiKeys.reduce(
+          (total, key) => total + key.remainingCredit,
+          0,
+        )}`,
+      );
+      this.sharedService.callbackDemand(demand, {
+        hasError: true,
+        error: 'Please Call Administrator',
+      });
+      this.loggerService.error('Luma Api Keys Error');
       return;
     }
 

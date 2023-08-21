@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { LumaApiKeysService } from './luma-api-keys.service';
 import { CreateLumaApiKey_RequestDto } from './dtos/request/create-luma-api-key.request.dto';
 import { ARizeGuard } from 'src/guards/arize.guard';
@@ -17,6 +17,14 @@ export class LumaApiKeysController {
   ) {
     return await this.lumaApiKeysService.createApiKey(
       createLumaApiKey_RequestDto,
+    );
+  }
+
+  @Get()
+  async getLumaApiKeysCount() {
+    return (await this.lumaApiKeysService.getAvailableLumaApiKeys()).reduce(
+      (total, key) => total + key.remainingCredit,
+      0,
     );
   }
 }
