@@ -43,18 +43,12 @@ export class DemandCreatedEventHandler {
     ) {
       this.slackUtilsService.sendWarningMessageDefaultChannel(
         `
-You don't have enough credit in your Luma Api Keys
-Your Luma Api Keys: ${lumaApiKeys.reduce(
+Luma API keys are under 100 
+Luma Api Keys: ${lumaApiKeys.reduce(
           (total, key) => total + key.remainingCredit,
           0,
         )}`,
       );
-      this.sharedService.callbackDemand(demand, {
-        hasError: true,
-        error: 'Please Call Administrator',
-      });
-      this.loggerService.error('Luma Api Keys Error');
-      return;
     }
 
     const lumaApiKey = lumaApiKeys[0];
