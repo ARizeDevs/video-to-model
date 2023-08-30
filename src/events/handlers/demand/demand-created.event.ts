@@ -43,7 +43,7 @@ export class DemandCreatedEventHandler {
     ) {
       this.slackUtilsService.sendWarningMessageDefaultChannel(
         `
-Luma API keys are under 100 
+Luma API keys are under 200 
 Luma Api Keys: ${lumaApiKeys.reduce(
           (total, key) => total + key.remainingCredit,
           0,
