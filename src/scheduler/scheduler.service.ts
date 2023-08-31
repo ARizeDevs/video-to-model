@@ -49,7 +49,24 @@ export class SchedulerService {
           const mappedLumaCapture = captures.find(
             (x) => x.slug === capture.slug,
           );
-          if (mappedLumaCapture.latestRun?.status === 'finished') {
+          if (
+            mappedLumaCapture.latestRun?.currentStage === 'Failed' ||
+            (mappedLumaCapture.latestRun?.status === 'finished' &&
+              !mappedLumaCapture.latestRun?.artifacts?.find(
+                (link) => link.title === 'textured_mesh_glb',
+              ))
+          ) {
+            await this.lumaCapturesService.update(capture.id, {
+              progress: mappedLumaCapture.latestRun?.progress,
+              status: 'failed',
+              getCapture: mappedLumaCapture,
+            });
+            this.sharedService.callbackDemand(capture.demand, {
+              progress: mappedLumaCapture.latestRun?.progress,
+              status: 'failed',
+              extra: mappedLumaCapture,
+            });
+          } else if (mappedLumaCapture.latestRun?.status === 'finished') {
             await this.lumaAiService.updateCapture(
               capture.lumaApiKey.apiKey,
               mappedLumaCapture.slug,
@@ -75,17 +92,6 @@ export class SchedulerService {
               status: 'completed',
               extra: mappedLumaCapture,
               artifacts: mappedLumaCapture.latestRun?.artifacts,
-            });
-          } else if (mappedLumaCapture.latestRun?.currentStage === 'Failed') {
-            await this.lumaCapturesService.update(capture.id, {
-              progress: mappedLumaCapture.latestRun?.progress,
-              status: 'failed',
-              getCapture: mappedLumaCapture,
-            });
-            this.sharedService.callbackDemand(capture.demand, {
-              progress: mappedLumaCapture.latestRun?.progress,
-              status: 'failed',
-              extra: mappedLumaCapture,
             });
           } else if (mappedLumaCapture.latestRun?.progress > 0) {
             await this.lumaCapturesService.update(capture.id, {
