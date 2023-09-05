@@ -53,7 +53,7 @@ export class SchedulerService {
             mappedLumaCapture.latestRun?.currentStage === 'Failed' ||
             (mappedLumaCapture.latestRun?.status === 'finished' &&
               !mappedLumaCapture.latestRun?.artifacts?.find(
-                (link) => link.title === 'textured_mesh_glb',
+                (artifact) => artifact.type === 'textured_mesh_glb',
               ))
           ) {
             await this.lumaCapturesService.update(capture.id, {

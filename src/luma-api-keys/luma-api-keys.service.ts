@@ -1,3 +1,4 @@
+import { LumaAiService } from 'src/luma-ai/luma-ai.service';
 import { CreateLumaApiKey_ResponseDto } from './dtos/response/create-luma-api-key.response.dto';
 import { Injectable } from '@nestjs/common';
 import { CreateLumaApiKey_RequestDto } from './dtos/request/create-luma-api-key.request.dto';
@@ -14,6 +15,7 @@ export class LumaApiKeysService {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly lumaApiKeyRepository: LumaApiKeyRepository,
+    private readonly lumaAiService: LumaAiService,
   ) {}
 
   async createApiKey(createLumaApiKey_RequestDto: CreateLumaApiKey_RequestDto) {
@@ -32,6 +34,16 @@ export class LumaApiKeysService {
 
   async getAvailableLumaApiKeys(): Promise<LumaApiKeyEntity[]> {
     const apiKeys = await this.lumaApiKeyRepository.find();
+    Promise.all(
+      apiKeys.map(async (apiKey) => {
+        const info = await this.lumaAiService.getCredit(apiKey.apiKey);
+        if (apiKey.remainingCredit != info.remaining)
+          this.lumaApiKeyRepository.update(
+            { id: apiKey.id },
+            { remainingCredit: info.remaining },
+          );
+      }),
+    );
     const availableApiKeys = apiKeys.filter(
       (apiKey) => apiKey.remainingCredit > 0,
     );
